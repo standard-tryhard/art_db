@@ -4,10 +4,11 @@ import sys
 import re
 import csv
 import itertools
+import time
 from typing import Dict
 
 bunny_fields = [
-	'Chronological Number,'
+	'Chronological Number'
 	,'Title'
 	,'Year Signed or Completed'
 	,'Media'
@@ -19,7 +20,7 @@ bunny_fields = [
 	,'Tag 2'
 	,'Tag 3']
 
-bunnies_csv = 'art_db_rootlist.csv'
+bunnies_csv = 'artdb_rootlist.csv'
 # bunnies_unsorted_items = bunny_house_extraction.items()
 # bunnies_ordrd_dict = collections.OrderedDict(sorted(bunnies_unsorted_items))
 # bunnies_ordrd_dict_with_default_values = populate_dict_with_default_values()
@@ -50,6 +51,8 @@ def propagate_dict(list_):
 		print(fieldname_)
 
 def assign_new_artwork():
+	print(f"{'===NEW ARTWORK===':^80}")
+
 	db_, next_new_idx_ = unpack_a_csv(bunnies_csv)
 	next_new_idx_fmttd = f"{next_new_idx_:06}"
 	new_artwork_ = []
@@ -57,30 +60,35 @@ def assign_new_artwork():
 
 
 	for f_name in bunny_fields[1:]:
-		print()
 		rsp_ = input("{0:^40}".format(f_name.upper()) )
 		if not rsp_:
 			new_artwork_.append("...")
 		else:
 			new_artwork_.append(rsp_)
 
-	contains_all_info = "..." not in new_artwork_[:6]
+	return new_artwork_
+
+def validate_new_artwork(newly_created_artwork_):
+	print("\n")
+	print(f"{'•••ARTWORK READY•••':^80}")
+	contains_all_info = "..." not in newly_created_artwork_[:6]
 
 	if contains_all_info:
-		for field, value in zip(bunny_fields, new_artwork_):
-			print(f"{field}::{value}")
-		print("Ok to write to the Art Database? ")
+		for field, value in zip(bunny_fields, newly_created_artwork_):
+			time.sleep(.2)
+			print(f"{field.upper():^40} :::: {value}")
+
+		rsp_ = input(f"{'OK? TO WRITE TO DB? ':^80}\n")
 
 	else:
-		print("Are you sure you want to leave the following blank? ")
+		rsp_ = input("Are you sure you want to leave the following blank?\n")
+
+	return rsp_
 
 if __name__ == "__main__":
-	print('printed from \'__main__\'')
-	all_bunnies_dict, next_new_idx_ = unpack_a_csv(bunnies_csv)
-	all_bunnies_dict[next_new_idx_] = []
-	assign_new_artwork()
+	print("printed from __main__")
 
-	# assign_key_value_pairs(bunny_reader)
+
 
 
 

@@ -2,9 +2,10 @@ import re
 import time
 
 # result = re.sub("mouse", "ou", "o") #this is just for 'typographic feedback'
+import artdb_bb_next_artwork_generator
+
 original_art_title = "0001—dog_ch4_(nothing_but_hounddog)"
 formatted_art_title = re.split('—|_', original_art_title)
-
 
 
 def clean(word_):
@@ -46,5 +47,7 @@ def print_db(_filename):
 			print(l)
 
 
-
-print_db("artdb_dd_maindb.csv")
+res_A = artdb_bb_next_artwork_generator.assign_new_artwork()
+res_B = artdb_bb_next_artwork_generator.validate_new_artwork(res_A)
+if res_B == "write":
+	print("writing to DB...")
