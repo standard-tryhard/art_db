@@ -1,53 +1,36 @@
-import re
+import sys
 import time
 
-# result = re.sub("mouse", "ou", "o") #this is just for 'typographic feedback'
+import artdb_bb_flHndler
 import artdb_bb_next_artwork_generator
-
-original_art_title = "0001—dog_ch4_(nothing_but_hounddog)"
-formatted_art_title = re.split('—|_', original_art_title)
-
-
-def clean(word_):
-	new_word = re.sub(r"[\(\)]", "", word_)
-	return new_word
-
-
-def get_full_title():
-	empty = ""
-	for idx in range(3):
-		print(idx)
-		print(formatted_art_title[idx])
-
-def my_func():
-#	print(“this is a function”)
-	print('avail. funcs. are --> ‘def_dos; def_tres; def_cua’ <-- END..OF..MSG ')
-
-
-
-chron_number, project_title, chapter_number = formatted_art_title[:3]
-
-
-c1 = formatted_art_title[3:]
-c2 = [clean(word.title()) for word in c1]
-chapter_title = " ".join(c2)
+import artdb_cc_formatters
 
 
 def get_total_db_len(_filename):
-	with open(f"{_filename}",'r') as fin:
-		_total_works_in_volume = len(fin.readlines()) - 1
+    with open(f"{_filename}", 'r') as fin:
+        _total_works_in_volume = len(fin.readlines()) - 1
 
-	return _total_works_in_volume
+    return _total_works_in_volume
 
 
 def print_db(_filename):
-	with open(f"{_filename}",'r') as fin:
-		for l in fin.readlines():
-			time.sleep(.5)
-			print(l)
+    with open(f"{_filename}", 'r') as fin:
+        for l in fin.readlines():
+            time.sleep(.5)
+            artdb_cc_formatters.print_f(l)
 
 
-res_A = artdb_bb_next_artwork_generator.assign_new_artwork()
-res_B = artdb_bb_next_artwork_generator.validate_new_artwork(res_A)
-if res_B == "write":
-	print("writing to DB...")
+def end_session():
+    rsp_ = input(f"{'OK TO OVERWRITE ROOTLIST WITH NEW DATA?':^50}")
+    if rsp_ and rsp_.lower() != "no":
+        artdb_bb_flHndler.merge_csv(artdb_bb_flHndler.artworks_rootlist_file,
+                                    artdb_bb_flHndler.artworks_appendlist_file)
+
+
+res_A, bookmarks = artdb_bb_next_artwork_generator.assign_new_artwork()
+res_B = artdb_bb_next_artwork_generator.validate_new_artwork(res_A, bookmarks)
+
+if res_B and res_B.lower != "no":
+    artdb_cc_formatters.print_f(f"{'Writing; to DB...':^50}")
+    artdb_bb_flHndler.append_to_csv(res_A, artdb_bb_flHndler.artworks_appendlist_file)
+    end_session()
