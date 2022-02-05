@@ -24,19 +24,25 @@ artwork_csv_database = 'artdb_dd_rootlist.csv'
 
 
 def assign_new_artwork():
-    print(f"{'===NEW ARTWORK===':^80}")
-
     db_, next_new_idx_ = artdb_bb_flHndler.unpack_a_csv(artwork_csv_database)
     next_new_idx_fmttd = f"{next_new_idx_:06}"
     new_artwork_ = []
     new_artwork_.append(next_new_idx_fmttd)
 
+    header = f'===NEW ARTWORK • {next_new_idx_fmttd}==='
+    print(f"{header:^80}")
+
+    bookmarks_ = []
+
     for idx, f_name in enumerate(database_columns[1:]):
-        bookmarks_ = []
         rsp_ = input("{0:^40}".format(f_name.upper()))
+
         if not rsp_ or rsp_ == ' ':
             new_artwork_.append("...")
             bookmarks_.append(idx)
+        elif f_name.lower() in ['width in cm', 'height in cm']:
+            converted_ = round(int(rsp_) * 2.54)
+            new_artwork_.append(converted_)
         else:
             new_artwork_.append(rsp_)
 
@@ -59,14 +65,14 @@ def validate_new_artwork(newly_created_artwork_, bookmarks_):
         for idx in bookmarks_:
             print(database_columns[idx])
             time.sleep(.33)
+
+        for field, value in zip(database_columns, newly_created_artwork_):
+            time.sleep(.2)
+            print(f"{field.upper():^50} :::: {value}")
+
         rsp_ = input(f"{'THOSE ARE DEFAULTS WRITTEN TO DB, OK?':^50}  ")
 
     return rsp_
-
-
-
-def write_new_artwork_toDB(var_):
-    pass
 
 
 if __name__ == "__main__":

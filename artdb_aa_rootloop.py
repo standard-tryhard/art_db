@@ -21,8 +21,8 @@ def print_db(_filename):
 
 
 def end_session():
-    rsp_ = input(f"{'OK TO OVERWRITE ROOTLIST WITH NEW DATA?':^50}")
-    if rsp_ and rsp_.lower() != "no":
+    rsp_ = input(f"{'OVERWRITE WITH NEW DATA? (write or ok)':^50}")
+    if rsp_ == "write" or rsp_ == "ok":
         artdb_bb_flHndler.merge_csv(artdb_bb_flHndler.artworks_rootlist_file,
                                     artdb_bb_flHndler.artworks_appendlist_file)
 
